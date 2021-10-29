@@ -11,7 +11,6 @@ from ase.io.extxyz import read_xyz
 from ase.units import Debye, Bohr, Hartree
 from rdkit import Chem
 from dgl.data.utils import save_info, load_info
-from itertools import product
 
 
 class QM9Dataset(DGLDataset):
