@@ -153,7 +153,8 @@ class QM9Dataset(DGLDataset):
             g = dgl.graph(bonds_info)  # 不完全无向图
 
             # 构造节点初始特征
-            g.ndata['loc'] = torch.tensor(ats.positions).float()  # positions
+            # g.ndata['loc'] = torch.tensor(ats.positions).float()  # positions
+            pos = torch.tensor(ats.positions).float()
             g.ndata['feat'] = torch.tensor(self.dict['charges'][i]).float()  # charges
             g.ndata['Z'] = torch.tensor(ats.numbers).long()  # Z, long means int64
             # 构造 边 初始特征
@@ -165,6 +166,8 @@ class QM9Dataset(DGLDataset):
                 # g.edata['dist'][i] = torch.norm(g.ndata['X'][u] - g.ndata['X'][v])
                 g.edata['dist'][i] = np.linalg.norm(ats.positions[u] - ats.positions[v])  # 完全图时，当 u=v 时，dist=0
                 g.edata['type'][i] = Z_u * Z_v + (np.abs(Z_u - Z_v) - 1) ** 2 / 4  # 自动转换为long类型
+                vec = pos[v] - pos[v]
+                g.edata['vec'][i] = vec / torch.norm(vec)
 
             graphs.append(g)
 
