@@ -32,6 +32,7 @@ class DMGCN(nn.Module):
         :param conv_init: parameters initialization method for convolutional layers
         :param read_init: parameters initialization method for the readout layer
         """
+        print('重新加载了  dmgcn  ')
         super(DMGCN, self).__init__()
         self.name = 'DMGCN'
         self.n_conv = n_conv

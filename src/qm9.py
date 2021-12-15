@@ -160,13 +160,14 @@ class QM9Dataset(DGLDataset):
             # 构造 边 初始特征
             g.edata['dist'] = torch.empty(g.num_edges())  # bonds distances
             g.edata['type'] = torch.empty(g.num_edges()).long()  # bonds types, long means int64
+            g.edata['vec'] = torch.empty(g.num_edges(), 3) # direction of edges
             for i, (u, v) in enumerate(zip(g.edges()[0], g.edges()[1])):
                 # (u, v) 的特征,即第 i 条边, size: torch.Size([])
                 Z_u, Z_v = g.ndata['Z'][u].item(), g.ndata['Z'][v].item()
                 # g.edata['dist'][i] = torch.norm(g.ndata['X'][u] - g.ndata['X'][v])
                 g.edata['dist'][i] = np.linalg.norm(ats.positions[u] - ats.positions[v])  # 完全图时，当 u=v 时，dist=0
-                g.edata['type'][i] = Z_u * Z_v + (np.abs(Z_u - Z_v) - 1) ** 2 / 4  # 自动转换为long类型
-                vec = pos[v] - pos[v]
+                g.edata['type'][i] = Z_u * Z_v + ((Z_u - Z_v) - 1) ** 2 / 4  # 自动转换为long类型
+                vec = pos[v] - pos[u]
                 g.edata['vec'][i] = vec / torch.norm(vec)
 
             graphs.append(g)

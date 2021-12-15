@@ -1,5 +1,8 @@
 import torch
 
-a = torch.arange(10)
-idx = torch.arange(2, 6)
-print(a[idx])
+from dmgcn import DMGCN
+from utils import  count_model_parameter
+model = DMGCN()
+
+print('num paras',count_model_parameter(model))
+

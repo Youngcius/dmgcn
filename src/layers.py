@@ -292,6 +292,8 @@ class DMGCNLayer(nn.Module):
         super(DMGCNLayer, self).__init__()
         self.topo_conv = TopoConvLayer(dim_node, dim_edge, n_centers_dist, norm=norm)
         self.spat_conv = SpatConvLayer(dim_node, dim_edge, n_centers_dist, n_centers_angle, norm=norm)
+        self.fc_update_edge = nn.Linear(dim_node, dim_edge, bias=False)
+        print('有了这个模块')
 
     def forward(self, g: dgl.DGLGraph):
         """
@@ -309,7 +311,7 @@ class DMGCNLayer(nn.Module):
         return g.ndata['h']
 
     def update_edges(self, edges):
-        h = 0.8 * edges.data['h'] + (1 - 0.8) * self.fc_update_edge(edges.src['h'] * edges.dst['h'])
+        h = 0.8 * edges.data['h'] + (1 - 0.8) * self.fc_update_edge(torch.cat([edges.src['h'] * edges.dst['h']], dim=1))
         return {'h': h}
 #
 # class DMGCNLayer(nn.Module):
